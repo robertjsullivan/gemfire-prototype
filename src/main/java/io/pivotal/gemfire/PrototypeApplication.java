@@ -1,15 +1,13 @@
 package io.pivotal.gemfire;
 
-import io.pivotal.gemfire.template.CustomerOperations;
+import io.pivotal.gemfire.service.Consumer;
+import io.pivotal.gemfire.service.Producer;
+import io.pivotal.gemfire.template.EnvelopeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportResource;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.context.annotation.ComponentScan;
 
 import javax.annotation.PostConstruct;
 
@@ -18,15 +16,23 @@ import javax.annotation.PostConstruct;
 public class PrototypeApplication {
 
 	@Autowired
-	CustomerOperations customerOperations;
+	EnvelopeService envelopeService;
+
+    @Autowired
+    Producer producer;
+
+    @Autowired
+    Consumer consumer;
 
 	@PostConstruct
 	public void run(){
 		System.out.println("Running PrototypeApplication");
-		customerOperations.run();
+		producer.run();
+        //consumer.run();
 	}
 
 	public static void main(String[] args) {
-		SpringApplication.run(PrototypeApplication.class, args);
+		SpringApplication app = new SpringApplication(PrototypeApplication.class);
+		app.run(args);
 	}
 }

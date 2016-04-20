@@ -30,10 +30,10 @@
     <gfe:local-region id="Customer">
     </gfe:local-region>
    -->
-    <gfe:client-region id="customer" shortcut="PROXY"/>
+    <gfe:client-region id="envelope" shortcut="PROXY"/>
     <!--<bean id="listener" class="org.springframework.data.gemfire.examples.util.LoggingCacheListener"/>-->
 
-    <bean id="customerTemplate" class="org.springframework.data.gemfire.GemfireTemplate">
-        <property name="region" ref="customer"/>
+    <bean id="envelopeTemplate" class="org.springframework.data.gemfire.GemfireTemplate">
+        <property name="region" ref="envelope"/>
     </bean>
 </beans>
