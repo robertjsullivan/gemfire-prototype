@@ -1,9 +1,14 @@
 package io.pivotal.gemfire.service;
 
+import io.pivotal.gemfire.continuousQuery.CQSpringListener;
 import io.pivotal.gemfire.domain.ContainerMetric;
 import io.pivotal.gemfire.domain.Envelope;
 import io.pivotal.gemfire.template.EnvelopeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.data.gemfire.listener.ContinuousQueryDefinition;
+import org.springframework.data.gemfire.listener.ContinuousQueryListenerContainer;
+import org.springframework.data.gemfire.listener.adapter.ContinuousQueryListenerAdapter;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -20,8 +25,8 @@ import java.util.concurrent.TimeUnit;
 
 @Component
 public class Producer implements Runnable {
-    private final int STATISTICS_CHUNK = 2000;
-    private final int MAX_ENVELOPES = 10000;
+    private final int STATISTICS_CHUNK = 100;
+    private final int MAX_ENVELOPES = 500;
 
     private long envelopeCounter;
     private String randomIdentifier ="";
@@ -48,6 +53,9 @@ public class Producer implements Runnable {
     @Autowired
     EnvelopeService envelopeService;
 
+    @Autowired
+    ContinuousQueryListenerContainer continuousQueryListenerContainer;
+
     public void run(){
         System.out.println("Running Producer with random Identifier: "+randomIdentifier);
         long startTime = System.nanoTime();
@@ -64,12 +72,8 @@ public class Producer implements Runnable {
                 }
                 startTime = System.nanoTime();
             }
-//            try {
-//                Thread.sleep(1000);
-//            }catch(Exception e){
-//                e.printStackTrace();
-//            }
         }
+
     }
 
     private Envelope generateRandomEnvelope() {

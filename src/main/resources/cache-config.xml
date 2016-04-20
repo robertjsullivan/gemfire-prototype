@@ -10,30 +10,26 @@
 		http://www.springframework.org/schema/data/gemfire http://www.springframework.org/schema/data/gemfire/spring-data-gemfire-1.3.xsd">
 
     <util:properties id="gemfire-props">
-        <prop key="log-level">warning</prop>
+        <prop key="log-level">debug</prop>
     </util:properties>
 
-<!--
-    <gfe:client-cache id="gemfireCache" pool-name="my-pool"/>
--->
-    <!--<gfe:pool id="my-pool" subscription-enabled="true">-->
-        <!--<gfe:locator host="localhost" port="40404"/>-->
-    <!--</gfe:pool>-->
 
+    <gfe:client-cache id="gemfireCache" pool-name="my-pool"/>
+
+    <gfe:pool id="my-pool" subscription-enabled="true">
+        <gfe:locator host="localhost" port="40404"/>
+    </gfe:pool>
+
+    <!--
     <gfe-data:datasource subscription-enabled="true">
         <gfe-data:server host="localhost" port="40410" />
     </gfe-data:datasource>
-
-    <!--<gfe:cache properties-ref="gemfire-props"/> -->
+    -->
 
     <!-- Enable JSON
     <gfe-data:json-region-autoproxy pretty-print="true"/>
 -->
 
-    <!--
-    <gfe:local-region id="Customer">
-    </gfe:local-region>
-   -->
     <gfe:client-region id="envelope" shortcut="PROXY"/>
     <!--<bean id="listener" class="org.springframework.data.gemfire.examples.util.LoggingCacheListener"/>-->
 
@@ -41,10 +37,27 @@
         <property name="region" ref="envelope"/>
     </bean>
 
-    <gfe:cq-listener-container id="cqListenerContainer" >
-        <!-- default handle method -->
-        <gfe:listener ref="listener" query="select * from /envelope where origin='bob' " />
-    </gfe:cq-listener-container>
+    <!-- this is the Event Driven POJO (MDP) -->
+    <bean id="eventListener" class="org.springframework.data.gemfire.listener.adapter.ContinuousQueryListenerAdapter">
+        <constructor-arg>
+            <bean class="io.pivotal.gemfire.continuousQuery.CQSpringListener"/>
+        </constructor-arg>
+    </bean>
 
-    <bean id="listener" class="io.pivotal.gemfire.continuousQuery.Listener"/>
+    <!-- and this is the event listener container... -->
+    <bean id="gemfireListenerContainer" class="org.springframework.data.gemfire.listener.ContinuousQueryListenerContainer">
+        <property name="cache" ref="gemfireCache"/>
+        <property name="autoStartup" value="true" />
+        <property name="phase" value="1" />
+        <property name="queryListeners">
+            <!-- set of listeners -->
+            <set>
+                <bean class="org.springframework.data.gemfire.listener.ContinuousQueryDefinition" >
+                    <constructor-arg name="query" value="SELECT * from /envelope where origin='bob'" />
+                    <constructor-arg name="listener" ref="eventListener" />
+                    <constructor-arg name="durable" value="true" />
+                </bean>
+            </set>
+        </property>
+    </bean>
 </beans>

@@ -33,7 +33,7 @@ public class Container {
   //  RegionService gemfireCache;
 
 //    public ContinuousQueryListenerContainer continuousQueryListenerContainer(){
-//        System.out.println("Registering Listener");
+//        System.out.println("Registering CQSpringListener");
 //        ContinuousQueryListenerContainer continuousQueryListenerContainer = new ContinuousQueryListenerContainer();
 //        continuousQueryListenerContainer.setCache(gemfireCache);
 //        ContinuousQueryDefinition continuousQueryDefinition = new ContinuousQueryDefinition("select * from /envelope where origin='bob'", continuousQueryListener());
@@ -44,7 +44,7 @@ public class Container {
 //
 //
 //    public ContinuousQueryListener continuousQueryListener(){
-//        return new Listener();
+//        return new CQSpringListener();
 //    }
 
 }
