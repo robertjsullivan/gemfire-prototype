@@ -32,4 +32,8 @@
    -->
     <gfe:client-region id="customer" shortcut="PROXY"/>
     <!--<bean id="listener" class="org.springframework.data.gemfire.examples.util.LoggingCacheListener"/>-->
+
+    <bean id="customerTemplate" class="org.springframework.data.gemfire.GemfireTemplate">
+        <property name="region" ref="customer"/>
+    </bean>
 </beans>
