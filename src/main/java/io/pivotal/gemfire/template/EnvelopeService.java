@@ -1,5 +1,6 @@
 package io.pivotal.gemfire.template;
 
+import com.gemstone.gemfire.cache.query.SelectResults;
 import io.pivotal.gemfire.domain.Envelope;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -17,20 +18,13 @@ public class EnvelopeService {
     @Autowired
     GemfireOperations envelopeTemplate;
 
-    /**
-     * run the example
-     */
-    public void run() {
-        System.out.println("IM RuNNING!!!!!!!");
-       // createCustomers();
-        //searchCustomers();
-        // deleteCustomers();
-        //searchCustomers();
-    }
-
     public void insert(Envelope envelope){
         envelopeTemplate.put(envelope.getKey(), envelope);
 
+    }
+
+    public SelectResults<Object> query(String query){
+        return envelopeTemplate.find(query);
     }
 //
 //    /*

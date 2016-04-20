@@ -1,5 +1,6 @@
 package io.pivotal.gemfire;
 
+import io.pivotal.gemfire.continuousQuery.Container;
 import io.pivotal.gemfire.service.Consumer;
 import io.pivotal.gemfire.service.Producer;
 import io.pivotal.gemfire.template.EnvelopeService;
@@ -8,6 +9,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import org.springframework.context.annotation.ImportResource;
+import org.springframework.data.gemfire.listener.ContinuousQueryListenerContainer;
 
 import javax.annotation.PostConstruct;
 
@@ -24,11 +26,19 @@ public class PrototypeApplication {
     @Autowired
     Consumer consumer;
 
-	@PostConstruct
+    //@Autowired
+    //ContinuousQueryListenerContainer continuousQueryListenerContainer;
+
+    //@Autowired
+    //Container container;
+
+    @PostConstruct
 	public void run(){
 		System.out.println("Running PrototypeApplication");
+       // ContinuousQueryListenerContainer continuousQueryListenerContainer = container.continuousQueryListenerContainer();
 		producer.run();
-        //consumer.run();
+        consumer.run();
+        //continuousQueryListenerContainer.stop();
 	}
 
 	public static void main(String[] args) {

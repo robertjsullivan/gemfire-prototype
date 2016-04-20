@@ -19,9 +19,9 @@ import java.util.concurrent.TimeUnit;
  */
 
 @Component
-public class Producer {
-    private final int STATISTICS_CHUNK = 10000;
-    private final int MAX_ENVELOPES = 50000;
+public class Producer implements Runnable {
+    private final int STATISTICS_CHUNK = 2000;
+    private final int MAX_ENVELOPES = 10000;
 
     private long envelopeCounter;
     private String randomIdentifier ="";
@@ -64,13 +64,18 @@ public class Producer {
                 }
                 startTime = System.nanoTime();
             }
+//            try {
+//                Thread.sleep(1000);
+//            }catch(Exception e){
+//                e.printStackTrace();
+//            }
         }
     }
 
     private Envelope generateRandomEnvelope() {
         String key  = randomIdentifier + new Long(envelopeCounter).toString();
         envelopeCounter++;
-        String origin = "myOrigin";
+        String origin = "bob";
         String eventType = "myEventType";
         Date timestamp = Calendar.getInstance().getTime();
         String applicationId = "myAppID";

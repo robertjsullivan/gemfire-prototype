@@ -13,12 +13,16 @@
         <prop key="log-level">warning</prop>
     </util:properties>
 
-
+<!--
     <gfe:client-cache id="gemfireCache" pool-name="my-pool"/>
+-->
+    <!--<gfe:pool id="my-pool" subscription-enabled="true">-->
+        <!--<gfe:locator host="localhost" port="40404"/>-->
+    <!--</gfe:pool>-->
 
-    <gfe:pool id="my-pool" subscription-enabled="true">
-        <gfe:locator host="localhost" port="40404"/>
-    </gfe:pool>
+    <gfe-data:datasource subscription-enabled="true">
+        <gfe-data:server host="localhost" port="40410" />
+    </gfe-data:datasource>
 
     <!--<gfe:cache properties-ref="gemfire-props"/> -->
 
@@ -36,4 +40,11 @@
     <bean id="envelopeTemplate" class="org.springframework.data.gemfire.GemfireTemplate">
         <property name="region" ref="envelope"/>
     </bean>
+
+    <gfe:cq-listener-container id="cqListenerContainer" >
+        <!-- default handle method -->
+        <gfe:listener ref="listener" query="select * from /envelope where origin='bob' " />
+    </gfe:cq-listener-container>
+
+    <bean id="listener" class="io.pivotal.gemfire.continuousQuery.Listener"/>
 </beans>

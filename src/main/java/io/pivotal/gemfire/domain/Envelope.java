@@ -1,12 +1,16 @@
 package io.pivotal.gemfire.domain;
 
+import com.gemstone.gemfire.pdx.PdxReader;
+import com.gemstone.gemfire.pdx.PdxSerializable;
+import com.gemstone.gemfire.pdx.PdxWriter;
+
 import java.io.Serializable;
 import java.util.Date;
 
 /**
  * Created by pivotal on 4/20/16.
  */
-public class Envelope implements Serializable{
+public class Envelope implements PdxSerializable{
 
 
     private String key;
@@ -16,12 +20,32 @@ public class Envelope implements Serializable{
 
     private ContainerMetric containerMetric;
 
+    public Envelope() {
+
+    }
+
     public Envelope(String key, String origin, String eventType, Date timestamp, ContainerMetric containerMetric) {
         this.key = key;
         this.origin = origin;
         this.eventType = eventType;
         this.timestamp = timestamp;
         this.containerMetric = containerMetric;
+    }
+
+    public void toData(PdxWriter writer) {
+        writer.writeString("key", key)
+                .writeString("origin", origin)
+                .writeString("eventType", eventType)
+                .writeDate("timestamp", timestamp)
+                .writeObject("containerMetric", containerMetric);
+    }
+
+    public void fromData(PdxReader reader) {
+        key = reader.readString("key");
+        origin = reader.readString("origin");
+        eventType = reader.readString("eventType");
+        timestamp = reader.readDate("timestamp");
+        containerMetric = (ContainerMetric) reader.readObject("containerMetric");
     }
 
     public String getKey() {

@@ -1,16 +1,23 @@
 package io.pivotal.gemfire.domain;
 
+import com.gemstone.gemfire.pdx.PdxReader;
+import com.gemstone.gemfire.pdx.PdxSerializable;
+import com.gemstone.gemfire.pdx.PdxWriter;
+
 import java.io.Serializable;
 
 /**
  * Created by pivotal on 4/20/16.
  */
-public class ContainerMetric implements Serializable {
+public class ContainerMetric implements PdxSerializable {
     private String applicationId;
     private int instanceIndex;
     private float cpuPercentage;
     private long memoryBytes;
     private long diskBytes;
+
+    public ContainerMetric() {
+    }
 
     public ContainerMetric(String applicationId, int instanceIndex, float cpuPercentage, long memoryBytes, long diskBytes) {
         this.applicationId = applicationId;
@@ -18,6 +25,22 @@ public class ContainerMetric implements Serializable {
         this.cpuPercentage = cpuPercentage;
         this.memoryBytes = memoryBytes;
         this.diskBytes = diskBytes;
+    }
+
+    public void toData(PdxWriter writer) {
+        writer.writeString("applicationId", applicationId)
+                .writeInt("instanceIndex", instanceIndex)
+                .writeFloat("cpuPercentage", cpuPercentage)
+                .writeLong("memoryBytes", memoryBytes)
+                .writeLong("diskBytes", diskBytes);
+    }
+
+    public void fromData(PdxReader reader) {
+        applicationId = reader.readString("applicationId");
+        instanceIndex = reader.readInt("instanceIndex");
+        cpuPercentage = reader.readFloat("cpuPercentage");
+        memoryBytes = reader.readLong("memoryBytes");
+        diskBytes = reader.readLong("diskBytes");
     }
 
     public String getApplicationId() {
