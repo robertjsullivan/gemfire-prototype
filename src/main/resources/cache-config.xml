@@ -30,7 +30,10 @@
     <gfe-data:json-region-autoproxy pretty-print="true"/>
 -->
 
-    <gfe:client-region id="envelope" shortcut="PROXY"/>
+    <bean id="productDBWriter" class="io.pivotal.gemfire.continuousQuery.ProductDBWriter" />
+    <gfe:client-region id="envelope" shortcut="PROXY">
+        <gfe:cache-writer ref="productDBWriter"/>
+    </gfe:client-region>
     <!--<bean id="listener" class="org.springframework.data.gemfire.examples.util.LoggingCacheListener"/>-->
 
     <bean id="envelopeTemplate" class="org.springframework.data.gemfire.GemfireTemplate">
@@ -60,4 +63,6 @@
             </set>
         </property>
     </bean>
+
+
 </beans>

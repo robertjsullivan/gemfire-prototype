@@ -53,9 +53,6 @@ public class Producer implements Runnable {
     @Autowired
     EnvelopeService envelopeService;
 
-    @Autowired
-    ContinuousQueryListenerContainer continuousQueryListenerContainer;
-
     public void run(){
         System.out.println("Running Producer with random Identifier: "+randomIdentifier);
         long startTime = System.nanoTime();
