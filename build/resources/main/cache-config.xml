@@ -25,29 +25,17 @@
         <gfe-data:server host="localhost" port="40410" />
     </gfe-data:datasource>
     -->
-    <!--<gfe:cache properties-ref="gemfire-props"/>-->
 
     <!-- Enable JSON
     <gfe-data:json-region-autoproxy pretty-print="true"/>
 -->
 
-    <!--
-    <gfe:local-region id="Customer">
-    </gfe:local-region>
-   -->
     <gfe:client-region id="envelope" shortcut="PROXY"/>
     <!--<bean id="listener" class="org.springframework.data.gemfire.examples.util.LoggingCacheListener"/>-->
 
     <bean id="envelopeTemplate" class="org.springframework.data.gemfire.GemfireTemplate">
         <property name="region" ref="envelope"/>
     </bean>
-
-    <!--<gfe:cq-listener-container id="cqListenerContainer" >-->
-        <!--&lt;!&ndash; default handle method &ndash;&gt;-->
-        <!--<gfe:listener ref="myListener" query="select * from /envelope" method="handleEvent" />-->
-    <!--</gfe:cq-listener-container>-->
-
-    <!--<bean id="myListener" class="io.pivotal.gemfire.continuousQuery.CQSpringListener"/>-->
 
     <!-- this is the Event Driven POJO (MDP) -->
     <bean id="eventListener" class="org.springframework.data.gemfire.listener.adapter.ContinuousQueryListenerAdapter">
@@ -65,7 +53,7 @@
             <!-- set of listeners -->
             <set>
                 <bean class="org.springframework.data.gemfire.listener.ContinuousQueryDefinition" >
-                    <constructor-arg name="query" value="SELECT * from /envelope where origin='tom'" />
+                    <constructor-arg name="query" value="SELECT * from /envelope where origin='bob'" />
                     <constructor-arg name="listener" ref="eventListener" />
                     <constructor-arg name="durable" value="true" />
                 </bean>
