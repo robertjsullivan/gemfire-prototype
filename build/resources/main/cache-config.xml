@@ -17,7 +17,8 @@
     <gfe:client-cache id="gemfireCache" pool-name="my-pool"/>
 
     <gfe:pool id="my-pool" subscription-enabled="true">
-        <gfe:locator host="localhost" port="40404"/>
+        <gfe:locator host="10.0.16.64" port="55221"/>
+        <gfe:locator host="10.0.16.65" port="55221"/>
     </gfe:pool>
 
     <!--
