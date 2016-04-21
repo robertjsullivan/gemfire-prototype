@@ -46,8 +46,9 @@ task 'run-generic'(type: JavaExec) {
 
 dependencies {
 	compile('org.springframework.boot:spring-boot-starter-data-gemfire')
+	compile('org.springframework.boot:spring-boot-starter-web')
 	compile('com.gemstone.gemfire:gemfire:8.1.0')
-	testCompile('org.springframework.boot:spring-boot-starter-test') 
+	testCompile('org.springframework.boot:spring-boot-starter-test')
 }
 
 

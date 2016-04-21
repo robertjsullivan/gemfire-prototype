@@ -1,22 +1,18 @@
 package io.pivotal.gemfire.service;
 
-import io.pivotal.gemfire.continuousQuery.CQSpringListener;
 import io.pivotal.gemfire.domain.ContainerMetric;
 import io.pivotal.gemfire.domain.Envelope;
 import io.pivotal.gemfire.template.EnvelopeService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.data.gemfire.listener.ContinuousQueryDefinition;
-import org.springframework.data.gemfire.listener.ContinuousQueryListenerContainer;
-import org.springframework.data.gemfire.listener.adapter.ContinuousQueryListenerAdapter;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.math.BigInteger;
 import java.security.SecureRandom;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Random;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -24,8 +20,8 @@ import java.util.concurrent.TimeUnit;
  */
 
 @Component
-public class Producer implements Runnable {
-    private final int STATISTICS_CHUNK = 100;
+public class Producer {
+    private final int STATISTICS_CHUNK = 1000;
     private final int MAX_ENVELOPES = 500;
 
     private long envelopeCounter;
@@ -53,23 +49,25 @@ public class Producer implements Runnable {
     @Autowired
     EnvelopeService envelopeService;
 
-    public void run(){
+    public List<String> run(int count){
+        List<String> rates = new ArrayList<String>();
         System.out.println("Running Producer with random Identifier: "+randomIdentifier);
         long startTime = System.nanoTime();
 
-        while(true && envelopeCounter < MAX_ENVELOPES){
+        while(true && envelopeCounter < count){
             Envelope envelope = generateRandomEnvelope();
             envelopeService.insert(envelope);
             if(envelopeCounter % STATISTICS_CHUNK == 0) {
                 long estimatedTime = System.nanoTime() - startTime;
                 if(TimeUnit.NANOSECONDS.toMillis(estimatedTime) == 0){
-                    System.out.println("Inserted "+STATISTICS_CHUNK+" envelopes at "+STATISTICS_CHUNK+" envelopes per millisecond.");
+                    rates.add("Inserted "+STATISTICS_CHUNK+" envelopes at "+STATISTICS_CHUNK+" envelopes per millisecond. <br/>");
                 }else {
-                    System.out.println("Inserted "+STATISTICS_CHUNK+" envelopes at " + (new Float(STATISTICS_CHUNK)/ TimeUnit.NANOSECONDS.toMillis(estimatedTime)) + " envelopes per millisecond.");
+                    rates.add("Inserted "+STATISTICS_CHUNK+" envelopes at " + (new Float(STATISTICS_CHUNK)/ TimeUnit.NANOSECONDS.toMillis(estimatedTime)) + " envelopes per millisecond.  <br/>");
                 }
                 startTime = System.nanoTime();
             }
         }
+        return rates;
 
     }
 

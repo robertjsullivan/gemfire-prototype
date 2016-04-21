@@ -36,8 +36,8 @@ public class PrototypeApplication {
 	public void run(){
 		System.out.println("Running PrototypeApplication");
        // ContinuousQueryListenerContainer continuousQueryListenerContainer = container.continuousQueryListenerContainer();
-		new Thread(producer).start();
-        new Thread(consumer).start();
+		//new Thread(producer).start();
+        //new Thread(consumer).start();
         //continuousQueryListenerContainer.stop();
 	}
 
