@@ -1,5 +1,6 @@
 package io.pivotal.gemfire;
 
+import com.sun.media.jfxmedia.logging.Logger;
 import io.pivotal.gemfire.continuousQuery.Container;
 import io.pivotal.gemfire.service.Consumer;
 import io.pivotal.gemfire.service.Producer;
@@ -12,6 +13,7 @@ import org.springframework.context.annotation.ImportResource;
 import org.springframework.data.gemfire.listener.ContinuousQueryListenerContainer;
 
 import javax.annotation.PostConstruct;
+import java.util.logging.Level;
 
 @SpringBootApplication
 @ImportResource(value = "cache-config.xml")
@@ -35,9 +37,18 @@ public class PrototypeApplication {
     @PostConstruct
 	public void run(){
 		System.out.println("Running PrototypeApplication");
+        String[] loggers = { "org.springframework"};
+        for (String ln : loggers) {
+            // Try java.util.logging as backend
+            java.util.logging.Logger.getLogger(ln).setLevel(Level.FINEST);
+
+            // Try Log4J as backend
+            org.apache.log4j.Logger.getLogger(ln).setLevel(org.apache.log4j.Level.TRACE);
+
+        }
        // ContinuousQueryListenerContainer continuousQueryListenerContainer = container.continuousQueryListenerContainer();
-		new Thread(producer).start();
-        new Thread(consumer).start();
+		//new Thread(producer).start();
+        //new Thread(consumer).start();
         //continuousQueryListenerContainer.stop();
 	}
 

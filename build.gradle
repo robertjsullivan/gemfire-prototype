@@ -46,8 +46,12 @@ task 'run-generic'(type: JavaExec) {
 
 dependencies {
 	compile('org.springframework.boot:spring-boot-starter-data-gemfire')
+	compile('org.springframework.boot:spring-boot-starter-websocket')
+	compile("org.springframework:spring-messaging")
 	compile('com.gemstone.gemfire:gemfire:8.1.0')
-	testCompile('org.springframework.boot:spring-boot-starter-test') 
+	compile('org.apache.logging.log4j:log4j-api:2.5')
+	compile('org.apache.logging.log4j:log4j-core:2.5')
+	testCompile('org.springframework.boot:spring-boot-starter-test')
 }
 
 
