@@ -26,6 +26,11 @@ public class EnvelopeService {
     public SelectResults<Object> query(String query){
         return envelopeTemplate.find(query);
     }
+
+    public int queryForInt(String query) {
+        SelectResults<Object> count =  envelopeTemplate.query(query);
+        return (Integer) count.asList().get(0);
+    }
 //
 //    /*
 //     * create some customers

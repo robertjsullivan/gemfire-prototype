@@ -17,6 +17,15 @@ public class Envelope implements PdxSerializable{
     private String origin;
     private String eventType;
     private Date timestamp;
+    private Date continousQueryReceivedTimestamp;
+
+    public Date getContinousQueryReceivedTimestamp() {
+        return continousQueryReceivedTimestamp;
+    }
+
+    public void setContinousQueryReceivedTimestamp(Date continousQueryReceivedTimestamp) {
+        this.continousQueryReceivedTimestamp = continousQueryReceivedTimestamp;
+    }
 
     private ContainerMetric containerMetric;
 
@@ -86,5 +95,17 @@ public class Envelope implements PdxSerializable{
 
     public void setContainerMetric(ContainerMetric containerMetric) {
         this.containerMetric = containerMetric;
+    }
+
+    @Override
+    public String toString() {
+        return "Envelope{" +
+                "key='" + key + '\'' +
+                ", origin='" + origin + '\'' +
+                ", eventType='" + eventType + '\'' +
+                ", timestamp=" + timestamp +
+                ", continousQueryReceivedTimestamp=" + continousQueryReceivedTimestamp +
+                ", containerMetric=" + containerMetric +
+                '}';
     }
 }

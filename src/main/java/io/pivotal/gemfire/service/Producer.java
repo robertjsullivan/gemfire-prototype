@@ -2,6 +2,7 @@ package io.pivotal.gemfire.service;
 
 import io.pivotal.gemfire.domain.ContainerMetric;
 import io.pivotal.gemfire.domain.Envelope;
+import io.pivotal.gemfire.monitor.Repository;
 import io.pivotal.gemfire.template.EnvelopeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -9,10 +10,7 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import java.math.BigInteger;
 import java.security.SecureRandom;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -22,9 +20,8 @@ import java.util.concurrent.TimeUnit;
 @Component
 public class Producer {
     private final int STATISTICS_CHUNK = 1000;
-    private final int MAX_ENVELOPES = 500;
 
-    private long envelopeCounter;
+
     private String randomIdentifier ="";
 
     @PostConstruct
@@ -47,15 +44,20 @@ public class Producer {
     }
 
     @Autowired
+    Repository repository;
+
+    @Autowired
     EnvelopeService envelopeService;
 
-    public List<String> run(int count){
+    public List<String> run(long count){
+        long envelopeCounter = 0;
         List<String> rates = new ArrayList<String>();
         System.out.println("Running Producer with random Identifier: "+randomIdentifier);
         long startTime = System.nanoTime();
 
         while(true && envelopeCounter < count){
-            Envelope envelope = generateRandomEnvelope();
+            envelopeCounter++;
+            Envelope envelope = generateRandomEnvelope(envelopeCounter);
             envelopeService.insert(envelope);
             if(envelopeCounter % STATISTICS_CHUNK == 0) {
                 long estimatedTime = System.nanoTime() - startTime;
@@ -68,13 +70,35 @@ public class Producer {
             }
         }
         return rates;
-
     }
 
-    private Envelope generateRandomEnvelope() {
-        String key  = randomIdentifier + new Long(envelopeCounter).toString();
-        envelopeCounter++;
-        String origin = "bob";
+    public Envelope sendSentinel() {
+        long startTime = System.nanoTime();
+        Envelope envelope = generateRandomEnvelope(0, "james");
+        envelopeService.insert(envelope);
+
+        boolean notFound = true;
+        long elapsedTime = 0L;
+        Envelope cqEnvelope = null;
+        while(notFound && elapsedTime < 60L){
+            cqEnvelope = repository.getQueryResult(envelope.getKey());
+            if(cqEnvelope != null){
+                notFound = false;
+            }
+
+            elapsedTime = TimeUnit.NANOSECONDS.toSeconds((System.nanoTime() - startTime));
+        }
+
+        return cqEnvelope;
+    }
+
+    private Envelope generateRandomEnvelope(long envelopeCounter) {
+        return generateRandomEnvelope(envelopeCounter, "bob");
+    }
+
+    private Envelope generateRandomEnvelope(long envelopeCounter, String origin) {
+        String key  = randomIdentifier + "-" + UUID.randomUUID().toString();
+
         String eventType = "myEventType";
         Date timestamp = Calendar.getInstance().getTime();
         String applicationId = "myAppID";

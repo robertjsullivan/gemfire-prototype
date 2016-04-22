@@ -82,4 +82,15 @@ public class ContainerMetric implements PdxSerializable {
     public void setDiskBytes(long diskBytes) {
         this.diskBytes = diskBytes;
     }
+
+    @Override
+    public String toString() {
+        return "ContainerMetric{" +
+                "applicationId='" + applicationId + '\'' +
+                ", instanceIndex=" + instanceIndex +
+                ", cpuPercentage=" + cpuPercentage +
+                ", memoryBytes=" + memoryBytes +
+                ", diskBytes=" + diskBytes +
+                '}';
+    }
 }

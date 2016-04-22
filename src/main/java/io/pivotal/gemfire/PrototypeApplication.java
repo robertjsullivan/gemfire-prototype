@@ -17,14 +17,8 @@ import javax.annotation.PostConstruct;
 @ImportResource(value = "cache-config.xml")
 public class PrototypeApplication {
 
-	@Autowired
-	EnvelopeService envelopeService;
-
-    @Autowired
-    Producer producer;
-
-    @Autowired
-    Consumer consumer;
+//	@Autowired
+//	EnvelopeService envelopeService;
 
     //@Autowired
     //ContinuousQueryListenerContainer continuousQueryListenerContainer;
